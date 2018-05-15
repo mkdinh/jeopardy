@@ -20,18 +20,25 @@ describe("Category", () => {
   });
 
   describe("When creating an new category", () => {
-    beforeEach(done => {
+    beforeEach(async done => {
       wrapper = mount(<Category {...minProps} />);
-      server.respond();
-      setTimeout(done);
+      await server.respond();
+      setTimeout(() => {
+        wrapper.update();
+        done();
+      });
     });
 
     it("should render without exploding", () => {
       expect(wrapper.exists()).toBe(true);
     });
 
-    it("logs the category", () => {
-      console.log(wrapper.update().debug());
+    it("render the category title", () => {
+      expect(wrapper.find("h1").text()).toEqual(minProps.category.title);
+    });
+
+    it("renders correct number of clues", () => {
+      expect(wrapper.find("Clue").length).toEqual(clues.length);
     });
   });
 });
